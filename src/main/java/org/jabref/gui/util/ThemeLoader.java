@@ -1,5 +1,13 @@
 package org.jabref.gui.util;
 
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import org.jabref.gui.JabRefFrame;
+import org.jabref.model.strings.StringUtil;
+import org.jabref.model.util.FileUpdateMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -7,16 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
-import org.jabref.gui.JabRefFrame;
-import org.jabref.model.strings.StringUtil;
-import org.jabref.model.util.FileUpdateMonitor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Installs the style file and provides live reloading.
@@ -36,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class ThemeLoader {
 
     private static final String DEFAULT_PATH_MAIN_CSS = JabRefFrame.class.getResource("Base.css").toExternalForm();
+    private static final String DEFAULT_PATH_DARK_CSS = JabRefFrame.class.getResource("Dark.css").toExternalForm();
     private static final String CSS_SYSTEM_PROPERTY = System.getProperty("jabref.theme.css");
     private static final Logger LOGGER = LoggerFactory.getLogger(ThemeLoader.class);
     private final FileUpdateMonitor fileUpdateMonitor;
@@ -90,5 +89,9 @@ public class ThemeLoader {
     @Deprecated
     public void installBaseCss(Parent control) {
         control.getStylesheets().add(0, DEFAULT_PATH_MAIN_CSS);
+    }
+
+    public void installDarkCss(Scene scene) {
+        addAndWatchForChanges(scene, DEFAULT_PATH_DARK_CSS, 0);
     }
 }

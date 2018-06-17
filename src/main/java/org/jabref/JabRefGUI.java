@@ -1,19 +1,8 @@
 package org.jabref;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import org.jabref.gui.BasePanel;
-import org.jabref.gui.DialogService;
-import org.jabref.gui.FXDialogService;
-import org.jabref.gui.GUIGlobals;
-import org.jabref.gui.JabRefFrame;
+import org.jabref.gui.*;
 import org.jabref.gui.dialogs.BackupUIManager;
 import org.jabref.gui.icon.IconTheme;
 import org.jabref.gui.importer.ParserResultWarningDialog;
@@ -29,9 +18,14 @@ import org.jabref.logic.shared.exception.NotASharedDatabaseException;
 import org.jabref.logic.util.Version;
 import org.jabref.model.database.shared.DatabaseNotSupportedException;
 import org.jabref.preferences.JabRefPreferences;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class JabRefGUI {
 
@@ -154,7 +148,11 @@ public class JabRefGUI {
         }
 
         Scene scene = new Scene(JabRefGUI.mainFrame, 800, 800);
-        Globals.getThemeLoader().installBaseCss(scene);
+        if(Globals.prefs.getBoolean(JabRefPreferences.DARK_THEME)) {
+            Globals.getThemeLoader().installDarkCss(scene);
+        } else {
+            Globals.getThemeLoader().installBaseCss(scene);
+        }
         mainStage.setTitle(JabRefFrame.FRAME_TITLE);
         mainStage.getIcons().addAll(IconTheme.getLogoSetFX());
         mainStage.setScene(scene);

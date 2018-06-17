@@ -1,41 +1,5 @@
 package org.jabref.preferences;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
-
-import javax.swing.UIManager;
-
 import org.jabref.JabRefException;
 import org.jabref.JabRefMain;
 import org.jabref.gui.SidePaneType;
@@ -83,18 +47,29 @@ import org.jabref.logic.xmp.XmpPreferences;
 import org.jabref.model.bibtexkeypattern.GlobalBibtexKeyPattern;
 import org.jabref.model.cleanup.FieldFormatterCleanups;
 import org.jabref.model.database.BibDatabaseMode;
-import org.jabref.model.entry.BibEntry;
-import org.jabref.model.entry.BibtexSingleField;
-import org.jabref.model.entry.CustomEntryType;
-import org.jabref.model.entry.FieldName;
-import org.jabref.model.entry.InternalBibtexFields;
+import org.jabref.model.entry.*;
 import org.jabref.model.entry.specialfields.SpecialField;
 import org.jabref.model.metadata.FileDirectoryPreferences;
 import org.jabref.model.metadata.SaveOrderConfig;
 import org.jabref.model.strings.StringUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.InvalidPreferencesFormatException;
+import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 public class JabRefPreferences implements PreferencesService {
 
@@ -115,6 +90,7 @@ public class JabRefPreferences implements PreferencesService {
     public static final String FONT_FAMILY = "fontFamily";
     public static final String WIN_LOOK_AND_FEEL = "lookAndFeel";
     public static final String FX_FONT_RENDERING_TWEAK = "fxFontRenderingTweak";
+    public static final String DARK_THEME = "darkTheme";
     public static final String LANGUAGE = "language";
     public static final String NAMES_LAST_ONLY = "namesLastOnly";
     public static final String ABBR_AUTHOR_NAMES = "abbrAuthorNames";
@@ -470,6 +446,7 @@ public class JabRefPreferences implements PreferencesService {
         }
 
         defaults.put(FX_FONT_RENDERING_TWEAK, OS.LINUX); //we turn this on per default on Linux
+        defaults.put(DARK_THEME, Boolean.TRUE);
         defaults.put(EMACS_ADDITIONAL_PARAMETERS, "-n -e");
 
         defaults.put(PUSH_TO_APPLICATION, "TeXstudio");

@@ -1,22 +1,16 @@
 package org.jabref.gui.preftabs;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
 import org.jabref.gui.DialogService;
 import org.jabref.gui.GUIGlobals;
 import org.jabref.logic.l10n.Localization;
 import org.jabref.preferences.JabRefPreferences;
-
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
 
 class AppearancePrefsTab extends JPanel implements PrefsTab {
 
@@ -26,6 +20,7 @@ class AppearancePrefsTab extends JPanel implements PrefsTab {
 
     private final Font usedFont = GUIGlobals.currentFont;
     private final JCheckBox fxFontTweaksLAF;
+    private final JCheckBox useDarkTheme;
 
     private final DialogService dialogService;
 
@@ -39,28 +34,17 @@ class AppearancePrefsTab extends JPanel implements PrefsTab {
         this.prefs = prefs;
         setLayout(new BorderLayout());
 
-        FormLayout layout = new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref", "");
+        FormLayout layout = new FormLayout("8dlu, 1dlu, left:pref:grow, 4dlu, fill:pref, 4dlu, fill:pref, 4dlu, left:pref, 1dlu, left:pref, 4dlu, left:pref", "");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+        builder.appendSeparator(Localization.lang("Appearance"));
 
         fxFontTweaksLAF = new JCheckBox(Localization.lang("Tweak font rendering for entry editor on Linux"));
-        // Only list L&F which are available
-
-        // only the default L&F shows the OSX specific first drop-down menu
-
-        builder.append(fxFontTweaksLAF);
+        builder.append(fxFontTweaksLAF,  13);
         builder.nextLine();
 
-        builder.leadingColumnOffset(2);
-
-        JPanel upper = new JPanel();
-        JPanel sort = new JPanel();
-        JPanel namesp = new JPanel();
-        JPanel iconCol = new JPanel();
-        GridBagLayout gbl = new GridBagLayout();
-        upper.setLayout(gbl);
-        sort.setLayout(gbl);
-        namesp.setLayout(gbl);
-        iconCol.setLayout(gbl);
+        useDarkTheme = new JCheckBox("Use dark theme");
+        builder.append(useDarkTheme, 13);
+        builder.nextLine();
 
         JPanel pan = builder.getPanel();
         pan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -70,6 +54,7 @@ class AppearancePrefsTab extends JPanel implements PrefsTab {
     @Override
     public void setValues() {
         fxFontTweaksLAF.setSelected(prefs.getBoolean(JabRefPreferences.FX_FONT_RENDERING_TWEAK));
+        useDarkTheme.setSelected(prefs.getBoolean(JabRefPreferences.DARK_THEME));
     }
 
     @Override
@@ -85,6 +70,10 @@ class AppearancePrefsTab extends JPanel implements PrefsTab {
         prefs.putInt(JabRefPreferences.FONT_STYLE, usedFont.getStyle());
         prefs.putInt(JabRefPreferences.FONT_SIZE, usedFont.getSize());
         GUIGlobals.currentFont = usedFont;
+
+        final boolean oldDarkThemeValue = prefs.getBoolean(JabRefPreferences.DARK_THEME);
+        prefs.putBoolean(JabRefPreferences.DARK_THEME, useDarkTheme.isSelected());
+        isRestartRequired |= oldDarkThemeValue != useDarkTheme.isSelected();
 
         if (isRestartRequired) {
             dialogService.showWarningDialogAndWait(Localization.lang("Settings"),
